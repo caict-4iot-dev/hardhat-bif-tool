@@ -1,0 +1,13 @@
+{
+  "compilerOptions": {
+    "outDir": "./dist",
+    "downlevelIteration": true,
+    "esModuleInterop": true,
+    "lib": [
+      "es2017",
+      "es5",
+      "dom"
+    ]
+  },
+  "exclude": ["./dist", "./node_modules"]
+}
