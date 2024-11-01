@@ -1,7 +1,7 @@
 {
-  "name": "@bifproject/hardhat-bif",
+  "name": "@bifproject/hardhat-bif-tool",
   "version": "1.0.1",
-  "description": "Hardhat plugin to develop smart contracts in bif network",
+  "description": "Hardhat plugin to bif-chain tool",
   "main": "dist/index.js",
   "files": [
     "src",
