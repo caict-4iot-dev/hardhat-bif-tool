@@ -1,5 +1,5 @@
 import { expect,assert } from "chai";
-import { LocalBifAccountsProvider } from "../src/internal/provider"
+import { LocalBifAccountsProvider } from "../../src/hardhat-bif/internal/provider"
 
 beforeEach(() => {  
     const {

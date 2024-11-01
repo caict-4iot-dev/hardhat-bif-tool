@@ -1,9 +1,9 @@
 import { expect } from 'chai';  
-import { HardhatBifProvider } from '../src/internal/hardhat-bif-provider';
-import { HardhatBifSigner } from '../src/internal/hardhat-bif-signers'
-import { LocalBifAccountsProvider } from '../src/internal/provider';
+import { HardhatBifProvider } from '../../src/hardhat-bif/internal/hardhat-bif-provider';
+import { HardhatBifSigner } from '../../src/hardhat-bif/internal/hardhat-bif-signers'
+import { LocalBifAccountsProvider } from '../../src/hardhat-bif/internal/provider';
 import { JsonRpcRequest, JsonRpcResponse } from "hardhat/types";
-import { TransactionRequest } from "../src/external/abstract-provider"
+import { TransactionRequest } from "../../src/hardhat-bif/external/abstract-provider"
 
 class MockEthereumProvider extends LocalBifAccountsProvider {  
     constructor(
@@ -41,7 +41,7 @@ describe('HardhatBifSigner', () => {
     
     it('getaddress equal did:bid:ef9jgpHmnF2Qv5miQUwgU9XeUCkYkVrj', async () => {
         const { HardhatBifSigner: SignerWithAddressImpl } = await import(
-            "../src/internal/hardhat-bif-signers"
+            "../../src/hardhat-bif/internal/hardhat-bif-signers"
         );
         
         const signerWithAddress = await SignerWithAddressImpl.create(provider, 'did:bid:ef9jgpHmnF2Qv5miQUwgU9XeUCkYkVrj');
@@ -51,7 +51,7 @@ describe('HardhatBifSigner', () => {
 
     it('getPrivateKey equal priSPKoJ8vUfXk92axGtokCDiw8cM7KHznL6iugvNxeANctrdL', async () => {
         const { HardhatBifSigner: SignerWithAddressImpl } = await import(
-            "../src/internal/hardhat-bif-signers"
+            "../../src/hardhat-bif/internal/hardhat-bif-signers"
         );
         
         const signerWithAddress = await SignerWithAddressImpl.create(provider, 'did:bid:ef9jgpHmnF2Qv5miQUwgU9XeUCkYkVrj');
@@ -61,7 +61,7 @@ describe('HardhatBifSigner', () => {
     
     it('signTransaction createContract equal', async () => {
         const { HardhatBifSigner: SignerWithAddressImpl } = await import(
-            "../src/internal/hardhat-bif-signers"
+            "../../src/hardhat-bif/internal/hardhat-bif-signers"
         );
         
         const signerWithAddress = await SignerWithAddressImpl.create(provider, 'did:bid:ef56JqCtiFNBU7z8Y8Nd47QsNPVNbTu3');
@@ -80,7 +80,7 @@ describe('HardhatBifSigner', () => {
 
     it('signTransaction payCoin equal', async () => {
         const { HardhatBifSigner: SignerWithAddressImpl } = await import(
-            "../src/internal/hardhat-bif-signers"
+            "../../src/hardhat-bif/internal/hardhat-bif-signers"
         );
         
         const signerWithAddress = await SignerWithAddressImpl.create(provider, 'did:bid:ef56JqCtiFNBU7z8Y8Nd47QsNPVNbTu3');

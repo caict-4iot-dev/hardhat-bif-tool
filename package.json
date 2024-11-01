@@ -15,14 +15,16 @@
     "lint:fix": "npx prettier --write . && npx eslint --fix .",
     "clean": "rm -rf ./dist",
     "test:compile": "tsc --project tsconfig.json",
-    "test": "npm run test:compile && mocha --recursive 'dist/test/**/*.js' -c --exit"
+    "test": "npm run test:compile && mocha --recursive 'dist/test/**/*.js' -c --exit",
+    "prepare": "patch-package"
   },
   "keywords": [
     "smart-contracts",
     "hardhat",
     "hardhat-plugin",
     "bif",
-    "deploy contract"
+    "deploy contract",
+    "solidity-compile"
   ],
   "author": "maxufeng",
   "license": "MIT",
@@ -32,10 +34,12 @@
     "io-ts": "^1.10.4",
     "lodash": "^4.17.11",
     "semver": "^6.3.0",
-    "chalk": "^2.4.2"
+    "chalk": "^2.4.2",
+    "@bifproject/solc-bif": "0.8.21-5",
+    "patch-package": "^8.0.0"
   },
   "devDependencies": {
-    "hardhat": "^2.22.5",
+    "hardhat": "2.22.5",
     "typescript": "~5.0.0",
     "eslint": "^9.5.0",
     "@types/mocha": ">=9.1.0",

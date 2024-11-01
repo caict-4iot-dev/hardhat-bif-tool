@@ -1,0 +1,44 @@
+diff --git a/node_modules/hardhat/internal/hardhat-network/stack-traces/library-utils.js b/node_modules/hardhat/internal/hardhat-network/stack-traces/library-utils.js
+index db42dd4..c6ea943 100644
+--- a/node_modules/hardhat/internal/hardhat-network/stack-traces/library-utils.js
++++ b/node_modules/hardhat/internal/hardhat-network/stack-traces/library-utils.js
+@@ -15,7 +15,7 @@ function getLibraryAddressPositions(bytecodeOutput) {
+ }
+ exports.getLibraryAddressPositions = getLibraryAddressPositions;
+ function normalizeCompilerOutputBytecode(compilerOutputBytecodeObject, addressesPositions) {
+-    const ZERO_ADDRESS = "0000000000000000000000000000000000000000";
++    const ZERO_ADDRESS = "000000000000000000000000000000000000000000000000";
+     for (const position of addressesPositions) {
+         compilerOutputBytecodeObject = linkHexStringBytecode(compilerOutputBytecodeObject, ZERO_ADDRESS, position);
+     }
+@@ -34,7 +34,7 @@ exports.linkHexStringBytecode = linkHexStringBytecode;
+ function zeroOutAddresses(code, addressesPositions) {
+     const addressesSlices = addressesPositions.map((start) => ({
+         start,
+-        length: 20,
++        length: 24,
+     }));
+     return zeroOutSlices(code, addressesSlices);
+ }
+@@ -56,7 +56,7 @@ function normalizeLibraryRuntimeBytecodeIfNecessary(code) {
+     // This is done by modifying the code on deployment, and hard-coding the contract address.
+     // The first instruction is a PUSH20 of the address, which we zero-out as a way of normalizing
+     // it. Note that it's also zeroed-out in the compiler output.
+-    if (code[0] === opcodes_1.Opcode.PUSH20) {
++    if (code[0] === opcodes_1.Opcode.PUSH24) {
+         return zeroOutAddresses(code, [1]);
+     }
+     return code;
+diff --git a/node_modules/hardhat/types/artifacts.d.ts b/node_modules/hardhat/types/artifacts.d.ts
+index 3b32616..268ce00 100644
+--- a/node_modules/hardhat/types/artifacts.d.ts
++++ b/node_modules/hardhat/types/artifacts.d.ts
+@@ -223,7 +223,7 @@ export interface CompilerOutputBytecode {
+         [sourceName: string]: {
+             [libraryName: string]: Array<{
+                 start: number;
+-                length: 20;
++                length: 24;
+             }>;
+         };
+     };

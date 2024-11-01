@@ -1,8 +1,8 @@
 import { expect } from 'chai';  
-import { HardhatBifProvider } from '../src/internal/hardhat-bif-provider';
-import { LocalBifAccountsProvider } from '../src/internal/provider';
+import { HardhatBifProvider } from '../../src/hardhat-bif/internal/hardhat-bif-provider';
+import { LocalBifAccountsProvider } from '../../src/hardhat-bif/internal/provider';
 import { JsonRpcRequest, JsonRpcResponse } from "hardhat/types";
-import { TransactionRequest } from "../src/external/abstract-provider"
+import { TransactionRequest } from "../../src/hardhat-bif/external/abstract-provider"
 
 class MockEthereumProvider extends LocalBifAccountsProvider {  
     constructor(
