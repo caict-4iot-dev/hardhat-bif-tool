@@ -1,8 +1,8 @@
 {
   "name": "@bifproject/hardhat-bif-tool",
-  "version": "1.0.1",
+  "version": "1.0.5",
   "description": "Hardhat plugin to bif-chain tool",
-  "main": "dist/index.js",
+  "main": "dist/src/index.js",
   "files": [
     "src",
     "dist",
@@ -36,9 +36,7 @@
     "semver": "^6.3.0",
     "chalk": "^2.4.2",
     "@bifproject/solc-bif": "0.8.21-5",
-    "patch-package": "^8.0.0"
-  },
-  "devDependencies": {
+    "patch-package": "^8.0.0",
     "hardhat": "2.22.5",
     "typescript": "~5.0.0",
     "eslint": "^9.5.0",
