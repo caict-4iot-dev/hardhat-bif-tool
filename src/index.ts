@@ -1,2 +1,2 @@
-import "./hardhat-bif"
-import "./hardhat-bif-compile"
+import "./hardhat-bif";
+import "./hardhat-bif-compile";

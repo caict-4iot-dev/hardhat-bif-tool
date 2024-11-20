@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "outDir": "../../../dist/hardhat-bif/external"
+  },
+  "exclude": [],
+  "extends": "./tsconfig.package.json",
+  "include": [
+    "./*.ts",
+    "./abi/coders/*.ts",
+    "./abi/*.ts",
+    "./constants/*.ts",
+    "./strings/*.ts"
+  ]
+}

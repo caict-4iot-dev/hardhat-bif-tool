@@ -1,0 +1,16 @@
+{
+  "extends": "../../base.tsconfig.json",
+  "compilerOptions": {
+    "paths": {
+      "@external/*": ["../../dist/hardhat-bif/external/*"]
+    },
+    "outDir": "../../dist/hardhat-bif",
+    "composite": true
+  },
+  "include": ["./*.ts", "./internal/*.ts", "./test/*.ts", "internal/errors.ts"],
+  "references": [
+    {
+      "path": "./external"
+    }
+  ]
+}

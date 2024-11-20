@@ -1,13 +1,23 @@
 {
   "compilerOptions": {
+    "target": "es6",
+    "module": "commonjs",
     "outDir": "./dist",
-    "downlevelIteration": true,
+    "rootDir": "./src",
+    "baseUrl": "./",
+    "paths": {
+      "*": ["src/*"]
+    },
     "esModuleInterop": true,
-    "lib": [
-      "es2017",
-      "es5",
-      "dom"
-    ]
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "declaration": true,
+    "sourceMap": true
   },
-  "exclude": ["./dist", "./node_modules"]
+  "include": ["src/**/*.ts"],
+  "exclude": ["node_modules", "**/*.spec.ts"],
+  "references": [
+    { "path": "./src/hardhat-bif" },
+    { "path": "./src/hardhat-bif-compile" }
+  ]
 }

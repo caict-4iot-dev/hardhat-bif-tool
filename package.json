@@ -1,8 +1,8 @@
 {
   "name": "@bifproject/hardhat-bif-tool",
-  "version": "1.0.5",
+  "version": "1.1.0",
   "description": "Hardhat plugin to bif-chain tool",
-  "main": "dist/src/index.js",
+  "main": "dist/index.js",
   "files": [
     "src",
     "dist",
@@ -10,12 +10,11 @@
     "README.md"
   ],
   "scripts": {
-    "build": "tsc --build .",
+    "build": "npm run clean && npm run lint:fix && tsc --build .",
     "lint": "npx prettier --check . && npx eslint .",
     "lint:fix": "npx prettier --write . && npx eslint --fix .",
     "clean": "rm -rf ./dist",
-    "test:compile": "tsc --project tsconfig.json",
-    "test": "npm run test:compile && mocha --recursive 'dist/test/**/*.js' -c --exit",
+    "test": "tsc --build . && mocha --recursive 'dist/*/test/**/*.js' -c --exit",
     "prepare": "patch-package"
   },
   "keywords": [
@@ -26,7 +25,7 @@
     "deploy contract",
     "solidity-compile"
   ],
-  "author": "maxufeng",
+  "author": "maxufeng@caict.ac.cn",
   "license": "MIT",
   "dependencies": {
     "debug": "^4.1.1",
@@ -36,14 +35,16 @@
     "semver": "^6.3.0",
     "chalk": "^2.4.2",
     "@bifproject/solc-bif": "0.8.21-5",
-    "patch-package": "^8.0.0",
     "hardhat": "2.22.5",
+    "patch-package": "^8.0.0",
     "typescript": "~5.0.0",
     "eslint": "^9.5.0",
     "@types/mocha": ">=9.1.0",
     "@types/chai": "^4.2.0",
     "@types/sinon": "^9.0.8",
     "@types/node": "^18.0.0",
+    "@types/crypto-js": "^4.2.2",
+    "@types/debug": "^4.1.12",
     "chai": "^4.2.0",
     "sinon": "^9.0.0",
     "bn.js": "^5.2.1",

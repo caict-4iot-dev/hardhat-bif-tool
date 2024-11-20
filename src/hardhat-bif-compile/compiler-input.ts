@@ -7,14 +7,14 @@ const log = debug("hardhat:hardhat-bif:bif-compile");
 function processString(str: string): string {
   if (str.startsWith("did:bid:")) {
     const decodedArray = bs58.decode(str.substring(10));
-    const signType = str.substring(8, 9);  
+    const signType = str.substring(8, 9);
     const encodeType = str.substring(9, 10);
-    const signMap: { [key: string]: string } = { 'z': '7a' };  
-    const encodeMap: { [key: string]: string } = { 's': '73', 't': '74' };
+    const signMap: { [key: string]: string } = { z: "7a" };
+    const encodeMap: { [key: string]: string } = { s: "73", t: "74" };
     const hexString = Array.from(decodedArray)
       .map((byte) => byte.toString(16).padStart(2, "0"))
       .join("");
-    const addressStr = `0x${(signMap[signType] || '65')}${(encodeMap[encodeType] || '66')}${hexString}`;
+    const addressStr = `0x${signMap[signType] || "65"}${encodeMap[encodeType] || "66"}${hexString}`;
     log(`process before:${str}, after:${addressStr}`);
     return addressStr;
   }
@@ -35,17 +35,25 @@ function replaceStringIfMatches(str: string): string {
 
 function process0xString(data: string): string {
   try {
-    const regex = /0x([^,;\]]+)/g;
-    let updatedData = data;
-    let match;
-    while ((match = regex.exec(data)) !== null) {
-      const originalString = `0x${match[1]}`;
-      const processedString = replaceStringIfMatches(originalString);
-      updatedData = updatedData.replace(originalString, processedString);
-    }
-    return updatedData;
+    const lines = data.split("\n");
+    const processedLines = lines.map((line) => {
+      if (line.includes("address")) {
+        const regex = /0x([^,;\]]+)/g;
+        let updatedLine = line;
+        let match;
+        while ((match = regex.exec(line)) !== null) {
+          const originalString = `0x${match[1]}`;
+          const processedString = replaceStringIfMatches(originalString);
+          updatedLine = updatedLine.replace(originalString, processedString);
+          log(`process process0xString:${updatedLine}`);
+        }
+        return updatedLine;
+      }
+      return line;
+    });
+    return processedLines.join("\n");
   } catch (error) {
-    log("process0xString error");
+    console.log("process0xString error");
     process.exit(1);
   }
 }
