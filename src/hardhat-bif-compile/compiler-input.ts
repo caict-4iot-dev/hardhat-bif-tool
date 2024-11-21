@@ -38,7 +38,7 @@ function process0xString(data: string): string {
     const lines = data.split("\n");
     const processedLines = lines.map((line) => {
       if (line.includes("address")) {
-        const regex = /0x([^,;\]]+)/g;
+        const regex = /0x([^,;\]\)]+)/g;
         let updatedLine = line;
         let match;
         while ((match = regex.exec(line)) !== null) {
