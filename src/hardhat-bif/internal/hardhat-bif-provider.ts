@@ -36,7 +36,7 @@ import {
   BifContractQuery,
   BifContractQueryResponse,
 } from "./bif-types";
-import { HardhatBifError } from "./errors";
+import { NetworkSessionError } from "./errors";
 
 const log = debug("hardhat:hardhat-bif:provider");
 
@@ -60,11 +60,14 @@ export class HardhatBifProvider extends Provider {
       })) as BlockNumber;
       log("getBlockNumber() : ", JSON.stringify(response));
       if (response.errorCode !== 0) {
-        return -1;
+        log(
+          `getBlockNumber errorCode: ${response.errorCode}, desc:${response.errorDesc}`,
+        );
+        throw new Error(`${response.errorDesc}`);
       }
       return Number(response.header?.blockNumber ?? "0");
     } catch (error) {
-      throw new Error(
+      throw new NetworkSessionError(
         `Failed to get block number from Hardhat provider: ${(error as Error).message}`,
       );
     }
@@ -94,11 +97,14 @@ export class HardhatBifProvider extends Provider {
       })) as AccountBalance;
       log("getBalance(address) : ", JSON.stringify(response));
       if (response.errorCode !== 0) {
-        return BigNumber.from(-1);
+        log(
+          `getBalance errorCode: ${response.errorCode}, desc:${response.errorDesc}`,
+        );
+        throw new Error(`${response.errorDesc}`);
       }
       return BigNumber.from(response.result?.balance ?? "0");
     } catch (error) {
-      throw new Error(
+      throw new NetworkSessionError(
         `Failed to getBalance ${addressOrName} from Hardhat provider: ${(error as Error).message}`,
       );
     }
@@ -119,11 +125,14 @@ export class HardhatBifProvider extends Provider {
       })) as AccountNonce;
       log("getTransactionCount(address) : ", JSON.stringify(response));
       if (response.errorCode !== 0) {
-        return -1;
+        log(
+          `getTransactionCount errorCode: ${response.errorCode}, desc:${response.errorDesc}`,
+        );
+        throw new Error(`${response.errorDesc}`);
       }
       return Number(response.result?.nonce ?? "0");
     } catch (error) {
-      throw new Error(
+      throw new NetworkSessionError(
         `Failed to getTransactionCount ${addressOrName} from Hardhat provider: ${(error as Error).message}`,
       );
     }
@@ -144,11 +153,14 @@ export class HardhatBifProvider extends Provider {
       })) as AccountPayload;
       log("getCode(address) : ", JSON.stringify(response));
       if (response.errorCode !== 0) {
-        return "";
+        log(
+          `getCode errorCode: ${response.errorCode}, desc:${response.errorDesc}`,
+        );
+        throw new Error(`${response.errorDesc}`);
       }
       return response.result?.contract?.payload ?? "";
     } catch (error) {
-      throw new Error(
+      throw new NetworkSessionError(
         `Failed to getCode ${addressOrName} from Hardhat provider: ${(error as Error).message}`,
       );
     }
@@ -177,6 +189,13 @@ export class HardhatBifProvider extends Provider {
       })) as BifTransactionResponse;
 
       log("sendTransaction(hash) : ", JSON.stringify(response));
+
+      if ((response?.errorCode ?? 0) !== 0) {
+        log(
+          `sendTransaction errorCode: ${response?.errorCode}, desc:${response?.errorDesc}`,
+        );
+        throw new Error(`${response?.errorDesc}`);
+      }
 
       if (response?.success_count !== 1) {
         return tmpTransaction;
@@ -223,7 +242,7 @@ export class HardhatBifProvider extends Provider {
       };
       return tmpTransaction;
     } catch (error) {
-      throw new Error(
+      throw new NetworkSessionError(
         `Failed to sendTransaction from Hardhat provider: ${(error as Error).message}`,
       );
     }
@@ -244,13 +263,21 @@ export class HardhatBifProvider extends Provider {
         params: [tmpTransaction],
       })) as BifContractQueryResponse;
       log("call(transaction) : ", JSON.stringify(response));
+
+      if ((response?.errorCode??0) != 0) {
+        log(
+          `call errorCode: ${response?.errorCode??""}, desc:${response?.errorDesc??""}`,
+        );
+        throw new Error(`${response.errorDesc??""}`);
+      }
+
       if (response?.query_rets[0]?.result?.code !== 0) {
         return "";
       }
 
       return "0x" + response?.query_rets[0]?.result?.evmcode;
     } catch (error) {
-      throw new Error(
+      throw new NetworkSessionError(
         `Failed to call from Hardhat provider: ${(error as Error).message}`,
       );
     }
@@ -301,9 +328,6 @@ export class HardhatBifProvider extends Provider {
       let res = new EthBlock();
       if (blockHashOrBlockTag === "latest") {
         blockHashOrBlockTag = (await this.getBlockNumber()).toString();
-        if (blockHashOrBlockTag === "-1") {
-          return res;
-        }
       }
       const responseBig = (await this._hardhatProvider.request({
         method: "block.getBlockInfo",
@@ -314,26 +338,32 @@ export class HardhatBifProvider extends Provider {
           },
         ],
       })) as BifBlock;
-      log("getBlock() : ", JSON.stringify(responseBig));
+      log("getBlock(first) :", JSON.stringify(responseBig));
       if (responseBig.errorCode !== 0) {
-        return res;
+        log(
+          `getBlock errorCode: ${responseBig.errorCode}, desc:${responseBig.errorDesc}`,
+        );
+        throw new Error(`${responseBig.errorDesc}`);
       }
 
-      if (responseBig?.header?.number === 1) {
+      if (blockHashOrBlockTag === "1") {
         res.parentHash = "";
       } else {
         const responseSmall = (await this._hardhatProvider.request({
           method: "block.getBlockInfo",
           params: [
             {
-              blockNumber: (responseBig?.header?.number ?? 1 - 1).toString(),
+              blockNumber: ((responseBig?.header?.number ?? 1) - 1).toString(),
               withLeader: false,
             },
           ],
         })) as BifBlock;
-
+        log("getBlock(second) :", JSON.stringify(responseBig));
         if (responseSmall.errorCode !== 0) {
-          return res;
+          log(
+            `getBlock errorCode: ${responseSmall.errorCode}, desc:${responseSmall.errorDesc}`,
+          );
+          throw new Error(`${responseSmall.errorDesc}`);
         }
         res.parentHash = responseSmall?.header?.hash ?? "";
       }
@@ -355,7 +385,10 @@ export class HardhatBifProvider extends Provider {
       })) as BifBlockTransaction;
       log("block.getTransactions ", JSON.stringify(responseTrans));
       if (responseTrans.error_code !== 0) {
-        return res;
+        log(
+          `getBlock errorCode: ${responseTrans.error_code}, desc:${responseTrans.error_desc}`,
+        );
+        throw new Error(`${responseTrans.error_desc}`);
       }
       const totalCount = responseTrans.result?.total_count ?? 0;
       for (let i = 0; i < totalCount; i++) {
@@ -366,7 +399,7 @@ export class HardhatBifProvider extends Provider {
       }
       return res;
     } catch (error) {
-      throw new Error(
+      throw new NetworkSessionError(
         `Failed to getBlock ${blockHashOrBlockTag} from Hardhat provider: ${(error as Error).message}`,
       );
     }
@@ -395,7 +428,7 @@ export class HardhatBifProvider extends Provider {
 
       return blockWithTransactions;
     } catch (error) {
-      throw new Error(
+      throw new NetworkSessionError(
         `Failed to getBlockWithTransactions ${blockHashOrBlockTag} from Hardhat provider: ${(error as Error).message}`,
       );
     }
@@ -415,7 +448,10 @@ export class HardhatBifProvider extends Provider {
       log("getTransaction(hash) : ", JSON.stringify(response));
       let tmpTransaction = new EthTransaction();
       if (response.errorCode !== 0) {
-        return tmpTransaction;
+        log(
+          `getTransaction errorCode: ${response.errorCode}, desc:${response.errorDesc}`,
+        );
+        throw new Error(`${response.errorDesc}`);
       }
 
       if (
@@ -483,9 +519,12 @@ export class HardhatBifProvider extends Provider {
             },
           ],
         })) as BifBlock;
-
+        log("getTransaction(hash) : ", JSON.stringify(responseBlock));
         if (responseBlock.errorCode !== 0) {
-          return tmpTransaction;
+          log(
+            `getTransaction errorCode: ${responseBlock.errorCode}, desc:${responseBlock.errorDesc}`,
+          );
+          throw new Error(`${responseBlock.errorDesc}`);
         }
 
         tmpTransaction.blockHash = responseBlock?.header?.hash ?? "";
@@ -496,7 +535,7 @@ export class HardhatBifProvider extends Provider {
 
       return tmpTransaction;
     } catch (error) {
-      throw new Error(
+      throw new NetworkSessionError(
         `Failed to getTransaction ${transactionHash} from Hardhat provider: ${(error as Error).message}`,
       );
     }
@@ -516,6 +555,13 @@ export class HardhatBifProvider extends Provider {
       log("getTransactionReceipt(hash) : ", JSON.stringify(response));
       if (response.errorCode === 4) {
         return null;
+      }
+
+      if (response.errorCode !== 0) {
+        log(
+          `getTransactionReceipt errorCode: ${response.errorCode}, desc:${response.errorDesc}`,
+        );
+        throw new Error(`${response.errorDesc}`);
       }
 
       let tmpTransaction = new EthTransactionReceipt();
@@ -550,7 +596,10 @@ export class HardhatBifProvider extends Provider {
           })) as checkContractAddress;
 
         if (responsecheckContractAddress.errorCode !== 0) {
-          return tmpTransaction;
+          log(
+            `getTransactionReceipt errorCode: ${responsecheckContractAddress.errorCode}, desc:${responsecheckContractAddress.errorDesc}`,
+          );
+          throw new Error(`${responsecheckContractAddress.errorDesc}`);
         }
         tmpTransaction.contractAddress = tmpTransaction.to;
       } else {
@@ -585,8 +634,12 @@ export class HardhatBifProvider extends Provider {
           },
         ],
       })) as BifBlock;
+      log("getTransactionReceipt(hash) : ", JSON.stringify(responseBlock));
       if (responseBlock.errorCode !== 0) {
-        return tmpTransaction;
+        log(
+          `getTransactionReceipt errorCode: ${responseBlock.errorCode}, desc:${responseBlock.errorDesc}`,
+        );
+        throw new Error(`${responseBlock.errorDesc}`);
       }
       tmpTransaction.blockHash = responseBlock?.header?.hash ?? "";
       tmpTransaction.root = "";
@@ -622,7 +675,8 @@ export class HardhatBifProvider extends Provider {
               "getTransactionReceipt(hash) error-hash : ",
               response?.result?.transactions[0]?.contract_tx_hashes[i],
             );
-            continue;
+            throw new Error(`getTransactionReceipt(hash) error-hash : ",
+              ${response?.result?.transactions[0]?.contract_tx_hashes[i]}`);
           }
 
           if (
@@ -671,7 +725,7 @@ export class HardhatBifProvider extends Provider {
 
       return tmpTransaction;
     } catch (error) {
-      throw new Error(
+      throw new NetworkSessionError(
         `Failed to getTransactionReceipt ${transactionHash} from Hardhat provider: ${(error as Error).message}`,
       );
     }

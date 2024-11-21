@@ -15,6 +15,7 @@ import { BigNumber, BigNumberish } from "../external/bignumber";
 
 export interface BlockNumber {
   errorCode: number;
+  errorDesc: string;
   header?: {
     blockNumber: string;
   };
@@ -64,6 +65,7 @@ export class EthBlock implements Block {
 
 export interface BifBlock {
   errorCode: number;
+  errorDesc: string;
   header?: {
     confirmTime?: string;
     number?: number;
@@ -105,6 +107,7 @@ export class EthTransaction implements TransactionResponse {
 
 export interface BifTransaction {
   errorCode: number;
+  errorDesc: string;
   result?: {
     total_count?: number;
     transactions?: [
@@ -163,6 +166,7 @@ export interface BifTransaction {
 
 export interface BifBlockTransaction {
   error_code: number;
+  error_desc: string;
   result?: {
     total_count?: number;
     transactions?: [
@@ -220,6 +224,7 @@ export interface contractInfo {
 
 export interface checkContractAddress {
   errorCode: number;
+  errorDesc: string;
   result: {
     isValid: boolean;
   };
@@ -279,6 +284,8 @@ export interface BifHashResponse {
 }
 
 export interface BifTransactionResponse {
+  errorCode?: number;
+  errorDesc?: string;
   results: BifHashResponse[];
   success_count: number;
 }
@@ -307,5 +314,7 @@ export interface BifContractRet {
 }
 
 export interface BifContractQueryResponse {
-  query_rets: BifContractRet[];
+  errorCode?: number;
+  errorDesc?: string;
+  query_rets?: BifContractRet[];
 }

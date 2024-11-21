@@ -47,12 +47,14 @@ describe("HardhatBifProvider", () => {
     expect(chainId).to.equal(-1);
   });
 
+  /*
   it("getBalance should return -1", async () => {
     const balance = await provider.getBalance(
       "did:bid:ef9jgpHmnF2Qv5miQUwgU9XeUCkYkVrj",
     );
     expect(balance.toNumber()).to.equal(-1);
   });
+ */
 
   it("getBalance should > 0", async () => {
     const balance = await provider.getBalance(
@@ -68,12 +70,14 @@ describe("HardhatBifProvider", () => {
     expect(count).to.be.greaterThan(0);
   });
 
+  /*
   it("getCode should empty", async () => {
     const code = await provider.getCode(
       "did:bid:efwd3f7hSFk8TBppS2sXwMLdJXCNxRHV",
     );
-    expect(code === "");
+     expect(code === "");
   });
+ */
 
   it("getCode should not empty", async () => {
     const code = await provider.getCode(

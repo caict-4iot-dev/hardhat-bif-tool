@@ -12,6 +12,12 @@ export class NetworkNotSupport extends HardhatBifError {
   }
 }
 
+export class NetworkSessionError extends HardhatBifError {
+  constructor(desc: string) {
+    super(`Error with chain: ${desc}`);
+  }
+}
+
 export class BifAccountsFormatError extends HardhatBifError {
   constructor(pri: string) {
     super(`plugine bif accounts privateKey:${pri} format error`);
