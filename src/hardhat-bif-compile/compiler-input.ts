@@ -76,8 +76,8 @@ function processFileSync(data: string): string {
 }
 
 function dealingString(data: string): string {
-  const tmpdata = process0xString(data);
-  return processFileSync(tmpdata);
+  //const tmpdata = process0xString(data);
+  return processFileSync(data);
 }
 
 export function getInputFromCompilationJob(

@@ -264,11 +264,11 @@ export class HardhatBifProvider extends Provider {
       })) as BifContractQueryResponse;
       log("call(transaction) : ", JSON.stringify(response));
 
-      if ((response?.errorCode??0) != 0) {
+      if ((response?.errorCode ?? 0) != 0) {
         log(
-          `call errorCode: ${response?.errorCode??""}, desc:${response?.errorDesc??""}`,
+          `call errorCode: ${response?.errorCode ?? ""}, desc:${response?.errorDesc ?? ""}`,
         );
-        throw new Error(`${response.errorDesc??""}`);
+        throw new Error(`${response.errorDesc ?? ""}`);
       }
 
       if (response?.query_rets[0]?.result?.code !== 0) {
